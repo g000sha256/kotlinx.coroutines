@@ -4,8 +4,8 @@
 
 package kotlinx.coroutines.flow
 
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.internal.*
-import kotlinx.coroutines.internal.Symbol
 import kotlin.jvm.*
 
 /**
@@ -139,6 +139,23 @@ public suspend fun <T> Flow<T>.firstOrNull(predicate: suspend (T) -> Boolean): T
         }
     }
     return result
+}
+
+/**
+ * The terminal operator that returns the first non-null element emitted by the flow and then cancels flow's collection.
+ * Throws [NoSuchElementException] if the flow did not contain a non-null element.
+ */
+@ExperimentalCoroutinesApi
+public suspend fun <T : Any> Flow<T?>.firstNotNull(): T =
+    first { value -> value != null } as T
+
+/**
+ * The terminal operator that awaits the first `null` element emitted by the flow and then cancels flow's collection.
+ * Throws [NoSuchElementException] if the flow did not contain a `null` element.
+ */
+@ExperimentalCoroutinesApi
+public suspend fun <T> Flow<T?>.firstNull() {
+    first { value -> value == null }
 }
 
 /**
