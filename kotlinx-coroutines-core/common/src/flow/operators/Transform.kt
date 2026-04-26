@@ -44,6 +44,22 @@ public fun <T: Any> Flow<T?>.filterNotNull(): Flow<T> = transform<T?, T> { value
 }
 
 /**
+ * Returns a flow that emits [Unit] when the upstream flow emits `false`, ignoring `true` emissions.
+ */
+@ExperimentalCoroutinesApi
+public fun Flow<Boolean>.filterIsFalse(): Flow<Unit> = transform { value ->
+    if (!value) return@transform emit(value = Unit)
+}
+
+/**
+ * Returns a flow that emits [Unit] when the upstream flow emits `true`, ignoring `false` emissions.
+ */
+@ExperimentalCoroutinesApi
+public fun Flow<Boolean>.filterIsTrue(): Flow<Unit> = transform { value ->
+    if (value) return@transform emit(value = Unit)
+}
+
+/**
  * Returns a flow containing the results of applying the given [transform] function to each value of the original flow.
  */
 public inline fun <T, R> Flow<T>.map(crossinline transform: suspend (value: T) -> R): Flow<R> = transform { value ->
